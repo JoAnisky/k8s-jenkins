@@ -1,0 +1,28 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - "--api"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=aniskydev@protonmail.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+    
+    ports:
+      web:
+        expose: true
+        exposedPort: 80
+      websecure:
+        expose: true
+        exposedPort: 443
+      traefik:
+        expose: true
+        exposedPort: 9000
+    
+    service:
+      type: LoadBalancer
