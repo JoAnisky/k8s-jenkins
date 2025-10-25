@@ -18,8 +18,8 @@ spec:
       serviceAccountName: jenkins
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts-jdk21
-          imagePullPolicy: IfNotPresent
+          image: joanisky/jenkins-with-docker:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
@@ -38,6 +38,8 @@ spec:
           volumeMounts:
             - name: jenkins-home
               mountPath: /var/jenkins_home
+            - name: docker-socket
+              mountPath: /var/run/docker.sock
           livenessProbe:
             httpGet:
               path: /login
@@ -54,6 +56,10 @@ spec:
         - name: jenkins-home
           persistentVolumeClaim:
             claimName: jenkins-home
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
 
 ---
 apiVersion: v1
