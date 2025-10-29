@@ -17,12 +17,28 @@ spec:
       web:
         expose: true
         exposedPort: 80
+        middlewares:
+          - redirect-www@file
       websecure:
         expose: true
         exposedPort: 443
+        middlewares:
+          - redirect-www@file
       traefik:
         expose: true
         exposedPort: 9000
     
     service:
       type: LoadBalancer
+    
+    providers:
+      file:
+        enabled: true
+        content: |
+          http:
+            middlewares:
+              redirect-www:
+                redirectRegex:
+                  regex: "^https://www\\.(.+)"
+                  replacement: "https://${1}"
+                  permanent: true
