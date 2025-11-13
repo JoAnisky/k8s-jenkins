@@ -8,4 +8,8 @@ RUN apt-get update && apt-get install -y docker.io curl && \
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
     rm kubectl
 
+RUN groupdel docker || true && \
+    groupadd -g 112 docker && \
+    usermod -aG docker jenkins
+
 USER jenkins
