@@ -9,13 +9,22 @@ grafana:
         server:
             root_url: "https://grafana.jonathanlore.fr"
             domain: "grafana.jonathanlore.fr"
+    sidecar:
+        alerts:
+            # Chaque projet crée un ConfigMap labellisé grafana_alert=1 (ns monitoring)
+            # contenant son export d'alert rules — le sidecar le charge automatiquement,
+            # sans modification de ce repo infra. Même principe que les PodMonitor.
+            enabled: true
+            label: grafana_alert
+            labelValue: "1"
+            searchNamespace: monitoring
 
 prometheus:
     prometheusSpec:
         # SÉCURITÉ DISQUE : Limite la rétention des données
         retention: 7d
         retentionSize: 10GB
-        # Découverte cross-namespace (surveille the-tip-top-api)
+        # Découverte cross-namespace : chaque projet définit son propre PodMonitor
         podMonitorNamespaceSelector: { }
         serviceMonitorNamespaceSelector: { }
         podMonitorSelector: { }
